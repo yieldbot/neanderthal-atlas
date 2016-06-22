@@ -1266,3 +1266,24 @@ JNIEXPORT void JNICALL Java_uncomplicate_neanderthal_CBLAS_dtrsm
   double *cB = (double *) (*env)->GetDirectBufferAddress(env, B);
   cblas_dtrsm(Order, Side, Uplo, TransA, Diag, M, N, alpha, cA, lda, cB, ldb);
 };
+
+/*
+ * ------------------------------------------------------
+ * LAPACK
+ * ------------------------------------------------------
+ */
+
+JNIEXPORT jint JNICALL Java_uncomplicate_neanderthal_LAPACK_dgesvd_1
+(JNIEnv *env, jclass clazz,
+ jchar jobu, jchar jobvt, jint m, jint n,
+ jobject a, jint lda, jobject s, jobject u, jint ldu,
+ jobject vt, jint ldvt, jobject work, jint lwork) {
+  double *cA = (double *) (*env)->GetDirectBufferAddress(env, a);
+  double *cS = (double *) (*env)->GetDirectBufferAddress(env, s);
+  double *cU = (double *) (*env)->GetDirectBufferAddress(env, u);
+  double *cVt = (double *) (*env)->GetDirectBufferAddress(env, vt);
+  double *cWork = (double *) (*env)->GetDirectBufferAddress(env, work);
+  int info;
+  dgesvd_(&jobu, &jobvt, &m, &n, cA, &lda, cS, cU, &ldu, cVt, &ldvt, cWork, &lwork, &info);
+  return info;
+}
